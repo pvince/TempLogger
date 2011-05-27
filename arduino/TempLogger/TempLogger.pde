@@ -157,7 +157,7 @@ void loop()
     Serial.println("error opening datalog.txt");
   }
   
-  delay(
+  delayIt(1);
 }
 
 void delayIt(int minutes) {
