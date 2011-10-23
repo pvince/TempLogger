@@ -53,6 +53,7 @@ void setup()
   Wire.begin();
   RTC.begin();
   
+  delay(2000); // 2 second startup delay
   if (! RTC.isrunning()) {
     Serial.println("RTC is NOT running!");
     // following line sets the RTC to the date & time this sketch was compiled
@@ -103,12 +104,13 @@ void loop()
 {
   // call sensors.requestTemperatures() to issue a global temperature 
   // request to all devices on the bus
-  Serial.print("Requesting temperatures...");
+  //Serial.print("Requesting temperatures...");
   sensors.requestTemperatures(); // Send the command to get temperatures
-  Serial.println("DONE");
+  //Serial.println("DONE");
   
   DateTime now = RTC.now();
   
+  //Serial.println("Got Time...");
   float tempC = DallasTemperature::toFahrenheit(sensors.getTempC(insideThermometer));
   
   // make a string for assembling the data to log:
@@ -116,22 +118,40 @@ void loop()
   floatToString(dataArray, tempC, 2);
 
 
-  String dataString = "";
+  //Serial.println("Got Temperature...");
+  
+  /*String dataString = "";
   dataString += String(now.year(), DEC);
   dataString += "/";
   dataString += String(now.month(), DEC);
   dataString += "/";
   dataString += String(now.day(), DEC);
-  dataString += ",";
+  dataString += " ";
   dataString += String(now.hour(), DEC);
   dataString += ":";
   dataString += String(now.minute(), DEC);
   dataString += ":";
-  dataString += String(now.second
-  (), DEC);
+  dataString += String(now.second(), DEC);
   dataString += ",";
   
-  dataString += String(dataArray);
+  dataString += String((int)(tempC*100), DEC);
+  */
+  
+  Serial.print(now.year(), DEC);
+  Serial.print("/");
+  Serial.print(now.month(), DEC);
+  Serial.print( "/");
+  Serial.print(now.day(), DEC);
+  Serial.print(" ");
+  Serial.print(now.hour(), DEC);
+  Serial.print(":");
+  Serial.print(now.minute(), DEC);
+  Serial.print(":");
+  Serial.print(now.second(), DEC);
+  Serial.print(",");
+  //Serial.println(((int)(tempC*100)), DEC);
+  Serial.println(dataArray);
+  
   // read three sensors and append to the string:
   /*for (int analogPin = 0; analogPin < 3; analogPin++) {
     int sensor = analogRead(analogPin);
@@ -147,16 +167,28 @@ void loop()
 
   // if the file is available, write to it:
   if (dataFile) {
-    dataFile.println(dataString);
+    dataFile.print(now.year(), DEC);
+    dataFile.print("/");
+    dataFile.print(now.month(), DEC);
+    dataFile.print( "/");
+    dataFile.print(now.day(), DEC);
+    dataFile.print(" ");
+    dataFile.print(now.hour(), DEC);
+    dataFile.print(":");
+    dataFile.print(now.minute(), DEC);
+    dataFile.print(":");
+    dataFile.print(now.second(), DEC);
+    dataFile.print(",");
+    //dataFile.println(((int)(tempC*100)), DEC);
+    dataFile.println(dataArray);
     dataFile.close();
-    // print to the serial port too:
-    Serial.println(dataString);
   }  
   // if the file isn't open, pop up an error:
   else {
     Serial.println("error opening datalog.txt");
   }
   
+  //delay(5000);
   delayIt(1);
 }
 
